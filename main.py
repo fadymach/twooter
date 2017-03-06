@@ -17,28 +17,27 @@ def createConnection(USERNAME, PASSWORD):
 
 
 def main():
-	user = input("Enter database username: ")
-	password = getpass.getpass('Enter database password: ')
-	(USERNAME, PASSWORD) = getCredentials()
+	USERNAME = input("Enter database username: ")
+	PASSWORD = getpass.getpass('Enter database password: ')
 	connection = createConnection(USERNAME, PASSWORD)
-	cursor = connection.cursor()
-	cursor.execute("SELECT * FROM movies")	
-	for row in cursor:	
-		print(row[0])
-	cursor.close()
-	connection.close()
+	try:
+		connection.ping()
+	except cx_Oracle.DatabaseError:
+		print(cx_Oracle.DatabaseError.message)
+	else:
+		os.system("clear")
+		twitterLogin.main(connection)
+	finally:
+		connection.close()
+
+
 
 def debugMain():
 	(USERNAME, PASSWORD) = getCredentials()
 	connection = createConnection(USERNAME, PASSWORD)
-	cursor = connection.cursor()
-	cursor.execute("SELECT * FROM users")	
-	for row in cursor:	
-		print(row[0], row[1])
 	twitterLogin.main()
-	cursor.close()
 	connection.close()
 
 
-# main()
-debugMain()
+main()
+# debugMain()
