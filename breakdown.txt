@@ -1,0 +1,24 @@
+Screens :
+
+Fady
+Database connection
+Login
+Reply/Compose (same as compose w/ modifications?) Must be able to parse tweet for hashtags.
+List followers (w/ option to select follower)
+Create list
+
+
+Matt
+User registration
+Search for tweets
+User information and 3 most recent tweets
+Manage List
+List of lists usr has created
+
+
+Alex
+Home (5 most recent tweets)
+Individual tweet (w/ stats, option to reply, and option to re-tweet)
+Search for users
+See lists usr is on
+Modify list
