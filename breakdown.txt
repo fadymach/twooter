@@ -2,7 +2,7 @@ Screens :
 
 Fady
 Database connection
---Login
+--Login (TODO - Add functionality after logged in) 
 Reply/Compose (same as compose w/ modifications?) Must be able to parse tweet for hashtags.
 List followers (w/ option to select follower)
 Create list
