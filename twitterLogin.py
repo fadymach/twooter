@@ -4,7 +4,17 @@ import os
 def main(connection):
 	input_valid = False
 	while (not input_valid):
+		os.system("clear")
+
+
+		banner = open("banner.txt", 'r')
+		bird = banner.read()
+		banner.close()
+		print(bird)
+
 		print("Welcome to Twooter")
+		
+
 		choice = input("Login(l) or Register(r)? ")
 		if choice.strip().lower() == 'l' or choice.strip().lower() == "login":
 			login(connection)
@@ -13,6 +23,8 @@ def main(connection):
 			#Call register function here. 
 			print("This is the register option, delete this line when added a proper function")
 			input_valid = True
+		elif choice.strip().lower() == "exit":
+			quit()
 		else:
 			print("Please choose an option")
 
@@ -42,7 +54,8 @@ def login(connection):
 		for row in rows:
 			if(credentials == row):
 				os.system("clear")
-				print("Login Success")	
+				#TODO
+				print("Login Success -- Need to add functionality here")	
 				LOGGEDIN = True
 	if(not LOGGEDIN):
 		os.system("clear")

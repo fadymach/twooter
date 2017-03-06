@@ -44,7 +44,7 @@ def debugMain():
 		os.system("clear")
 		twitterLogin.main(connection)
 	finally:
-		print("Program Ended here. The connection is closed properly")
+		print("Program ended up in main.py -- The connection is closed properly")
 		connection.close()
 
 
