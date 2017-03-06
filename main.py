@@ -29,15 +29,24 @@ def main():
 		twitterLogin.main(connection)
 	finally:
 		connection.close()
+		cursor.close()
 
 
 
 def debugMain():
 	(USERNAME, PASSWORD) = getCredentials()
 	connection = createConnection(USERNAME, PASSWORD)
-	twitterLogin.main()
-	connection.close()
+	try:
+		connection.ping()
+	except cx_Oracle.DatabaseError:
+		print(cx_Oracle.DatabaseError.message)
+	else:
+		os.system("clear")
+		twitterLogin.main(connection)
+	finally:
+		print("Program Ended here. The connection is closed properly")
+		connection.close()
 
 
-main()
-# debugMain()
+# main()
+debugMain()

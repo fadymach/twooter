@@ -1,3 +1,6 @@
+import getpass
+import os
+
 def main(connection):
 	input_valid = False
 	while (not input_valid):
@@ -15,7 +18,54 @@ def main(connection):
 
 
 def login(connection):
+	os.system("clear")
+	LOGGEDIN = False 
+	LOGINATTEMPT = 0
+
+
+	#No validation needed for password. If password is wrong, no login allowed.
 	cursor = connection.cursor()
+
+	#Select the username and password rows from the users table
+	#Will compare the entered information to see if vaid login exists
 	cursor.execute("SELECT usr, pwd FROM users")
 	rows = cursor.fetchall()
-	print(rows)
+	
+	username = getUsername()
+
+	while(not LOGGEDIN and LOGINATTEMPT < 3):
+		LOGINATTEMPT += 1
+		os.system("clear")
+		print("Attempt Number %d/3" %LOGINATTEMPT)
+		password = getpass.getpass()
+		credentials = (username, password)
+		for row in rows:
+			if(credentials == row):
+				os.system("clear")
+				print("Login Success")	
+				LOGGEDIN = True
+	if(not LOGGEDIN):
+		os.system("clear")
+		print("Username and/or Password Incorrect")
+	
+
+
+	#Must close the cursor here, but the connection is closed in main.py. If program doesn't end up in main.py, must close it in your file.
+	cursor.close()
+
+
+def getUsername():
+	USERVALID = False
+	#Validate the input of username as an integer
+	while(USERVALID == False):	
+		try:
+			user_input = input("Please enter your unique User ID: ")
+			username = int(user_input)
+		except ValueError:
+			os.system("clear")
+			print("Please enter an integer")
+			continue
+		else: 
+			USERVALID = True
+			break
+	return username
