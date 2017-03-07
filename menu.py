@@ -1,10 +1,38 @@
 import os
 
-def menu():
+def menu(connection):
+	# Display menu and take user input
+	printScreen()
+
+	cmd = input('\n' + '\t' + "       COMMAND: ").strip().lower()
+
+	while cmd not in ["fe","fo","ct","st","su","ml","exit"]:
+		os.system("clear")
+		printScreen()
+		cmd = input('\n' + " ENTER A VALID COMMAND: ").strip().lower()
+
+	if cmd == "fe":
+		# CALL FEED
+	elif cmd == "fo":
+		# CALL FOLLOWERS
+	elif cmd == "ct":
+		# CALL COMPOSE TWOOT
+	elif cmd == "st":
+		# CALL SEARCH TWOOT
+	elif cmd == "su":
+		# CALL SEARCH USERS
+	elif cmd == "ml":
+		# CALL MANAGE LISTS
+	elif cmd == "exit":
+		connection.close()
+		os.system("clear")
+		print("Logged out")
+
+
+def printScreen():
 	os.system("clear")
 
 	print("Main Menu" + '\n')
-	
 	print("---------------------------------")
 	print("GO TO:" + '\t'*3 + "COMMAND:")
 	print("---------------------------------")
@@ -17,11 +45,9 @@ def menu():
 				("Manage Lists ","ML"), \
 				("Logout       ","EXIT")]
 
-	for command in commands:
-		print(command[0] + '\t'*2 + command[1])
+	for i in commands:
+		print(i[0] + '\t'*2 + i[1])
 	print("---------------------------------")
-
-
 
 if __name__ == '__main__':
 	menu()

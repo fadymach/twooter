@@ -72,8 +72,7 @@ def createUsr(connection, name, email, city, timezone, password, maxID):
 	print("Your User ID is:" + '\t' + str(maxID+1))
 	
 	confirm = input('\n' + "Confirm? (y/n) ").strip().lower()
-	while (confirm != "yes") and (confirm != "y") \
-		and (confirm != "no") and (confirm != "n"):
+	while confirm not in ["yes", "y", "no", "n"]:
 			confirm = input('\n' + "Confirm? (y/n) ").strip().lower()
 	
 	if (confirm == "yes") or (confirm == "y"):
