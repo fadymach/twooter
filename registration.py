@@ -1,5 +1,5 @@
 import getpass as gp
-import re
+import re, os
 
 def register(connection):
 	os.system("clear")
@@ -31,7 +31,7 @@ def getUsr(connection):
 	while (timezone < -12) or (timezone > 14):
 		timezone = float(input("Invalid timezone!"+'\n'+"Timezone: "))
 
-	print("Enter a password (Max 4 characters)")
+	print("Enter a password (max 4 characters)")
 	password = gp.getpass()
 	while len(password) > 4:
 		print("Password must be less than 4 characters!")
@@ -50,32 +50,38 @@ def createUsr(connection, name, email, city, timezone, password, maxID):
 	# Executes SQL statement to insert new user
 	cursor = connection.cursor()
 
-	insert_statement = "INSERT INTO users " \
-		"VALUES (" +str(maxID+1)+ "," +password+ "," +name+ "," +email+ "," \
-		+city+ "," +str(timezone)+ ")"
+	cursor.prepare("INSERT INTO users VALUES (" \
+		":id, :password, :name, :email, :city, :timezone)")
+	cursor.execute(None, \
+		{'id':maxID+1, 'password':password, 'name':name, 'email':email, \
+		'city':city, 'timezone':timezone})
 
-	cursor.execute(insert_statement)
+	#insert_statement = "INSERT INTO users " \
+		#"VALUES (" +str(maxID+1)+ "," +password+ "," +name+ "," +email+ "," \
+		#+city+ "," +str(timezone)+ ")"
+	#cursor.execute(insert_statement)
 
 	# Review account before commit
 	os.system("clear")
 	print("Review your account")
 	print("-----------------------------------------------------------"+'\n')
-	print("Name:" + '\t' + name)
-	print("Email:" + '\t' + email)
-	print("City:" + '\t' + city)
-	print("Time zone:" + '\t' + str(timezone))
+	print("Name:" + '\t'*3 + name)
+	print("Email:" + '\t'*3 + email)
+	print("City:" + '\t'*3 + city)
+	print("Time zone:" + '\t'*2 + str(timezone))
 	print("Your User ID is:" + '\t' + str(maxID+1))
 	
-	confirm = lower(input("Confirm? (y/n) "))
-	while (confirm != "yes") or (confirm != "y") \
-		or (confirm != "no") or (confirm != "n"):
-			confirm = lower(input("Confirm? (y/n) "))
+	confirm = input('\n' + "Confirm? (y/n) ").strip().lower()
+	while (confirm != "yes") and (confirm != "y") \
+		and (confirm != "no") and (confirm != "n"):
+			confirm = input('\n' + "Confirm? (y/n) ").strip().lower()
 	
 	if (confirm == "yes") or (confirm == "y"):
-		cursor.commit()
+		connection.commit()
+		cursor.close()
 		# CALL HOME SCREEN
 	elif (confirm == "no") or (confirm == "n"):
-		cursor.rollback()
+		cursor.close()
 		# RETURN TO LOGIN SCREEN
 
 
