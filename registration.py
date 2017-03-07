@@ -83,25 +83,3 @@ def createUsr(connection, name, email, city, timezone, password, maxID):
 	elif (confirm == "no") or (confirm == "n"):
 		cursor.close()
 		# RETURN TO LOGIN SCREEN
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
