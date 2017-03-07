@@ -1,20 +1,18 @@
-import cx_Oracle as cx
 import getpass as gp
-import os
 import re
 
-def registration(connection):
+def register(connection):
+	os.system("clear")
+	print('\n'+"Twooter User Registration")
+	print("-------------------------------------------------------------")
 
-	def __init__(self):
-		print('\n'+"Twooter User Registration")
-		print("-------------------------------------------------------------")
-		
-		getUsr(connection)
+	getUsr(connection)
 
 
 def getUsr(connection):
 	cursor = connection.cursor()
 
+	# Get new user info
 	name = input("Name: ")
 	while len(name) > 20:
 		name = input("Name must be less than 20 characters!"+'\n'+"Name: ")
@@ -39,8 +37,65 @@ def getUsr(connection):
 		print("Password must be less than 4 characters!")
 		password = getpass()
 
-	# query to get max user id
-	createUsr(connection)
+	# Query maximum user ID
+	maxID_query = "SELECT MAX(usr) FROM users"
+	maxID_result = cursor.execute(maxID_query)
+	maxID = cursor.fetchone()[0]
+	cursor.close()
 
-def createUsr(connection):
+	createUsr(connection, name, email, city, timezone, password, maxID)
+
+
+def createUsr(connection, name, email, city, timezone, password, maxID):
+	# Executes SQL statement to insert new user
+	cursor = connection.cursor()
+
+	insert_statement = "INSERT INTO users " \
+		"VALUES (" +str(maxID+1)+ "," +password+ "," +name+ "," +email+ "," \
+		+city+ "," +str(timezone)+ ")"
+
+	cursor.execute(insert_statement)
+
+	# Review account before commit
+	os.system("clear")
+	print("Review your account")
+	print("-----------------------------------------------------------"+'\n')
+	print("Name:" + '\t' + name)
+	print("Email:" + '\t' + email)
+	print("City:" + '\t' + city)
+	print("Time zone:" + '\t' + str(timezone))
+	print("Your User ID is:" + '\t' + str(maxID+1))
 	
+	confirm = lower(input("Confirm? (y/n) "))
+	while (confirm != "yes") or (confirm != "y") \
+		or (confirm != "no") or (confirm != "n"):
+			confirm = lower(input("Confirm? (y/n) "))
+	
+	if (confirm == "yes") or (confirm == "y"):
+		cursor.commit()
+		# CALL HOME SCREEN
+	elif (confirm == "no") or (confirm == "n"):
+		cursor.rollback()
+		# RETURN TO LOGIN SCREEN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,3 +1,7 @@
+Conventions:
+- Include os.system("clear") at the BEGINNING of functions.
+- At every point of user input, should we include the option to allow the user to return to the main menu?
+
 Screens :
 
 Fady
@@ -9,6 +13,7 @@ Create list
 
 
 Matt
+Main Menu
 User registration
 Search for tweets
 User information and 3 most recent tweets
