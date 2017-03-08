@@ -3,6 +3,7 @@ import getpass
 import logReg
 import os
 import compose
+import feed
 
 #Reads username and password from file. Format it with username and password on their own line
 def getCredentials():
@@ -27,7 +28,8 @@ def main():
 		print(cx_Oracle.DatabaseError.message)
 	else:
 		os.system("clear")
-		logReg.main(connection)
+		usr = logReg.main(connection)
+		feed(usr, connection)
 	finally:
 		connection.close()
 		cursor.close()
