@@ -7,6 +7,8 @@ Screens :
 Fady
 Reply/Compose (same as compose w/ modifications?) Must be able to parse tweet for hashtags.
 List followers (w/ option to select follower)
+userSearch
+userInfo
 
 
 Matt
@@ -20,7 +22,6 @@ Modify list
 
 Alex
 Home (5 most recent tweets)
-Individual tweet (w/ stats, option to reply, and option to re-tweet)
-Search for users
-See lists usr is on
-
+tweetInfo (w/ stats, option to reply, and option to re-tweet)
+feed pages
+separate display()
