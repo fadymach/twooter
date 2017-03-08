@@ -2,6 +2,7 @@ import cx_Oracle
 import getpass
 import twitterLogin
 import os
+import compose
 
 #Reads username and password from file. Format it with username and password on their own line
 def getCredentials():
@@ -42,7 +43,8 @@ def debugMain():
 		print(cx_Oracle.DatabaseError.message)
 	else:
 		os.system("clear")
-		twitterLogin.main(connection)
+		usr = twitterLogin.main(connection)
+		compose.create(connection, usr)
 	finally:
 		print("Program ended up in main.py -- The connection is closed properly")
 		connection.close()

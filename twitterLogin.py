@@ -17,7 +17,7 @@ def main(connection):
 
 		choice = input("Login(l) or Register(r)? ")
 		if choice.strip().lower() == 'l' or choice.strip().lower() == "login":
-			login(connection)
+			username = login(connection)
 			input_valid = True
 		elif choice.strip().lower() == 'r' or choice.strip().lower() == "register":
 			#Call register function here. 
@@ -27,6 +27,7 @@ def main(connection):
 			quit()
 		else:
 			print("Please choose an option")
+	return username
 
 
 def login(connection):
@@ -57,14 +58,15 @@ def login(connection):
 				#TODO
 				print("Login Success -- Need to add functionality here")	
 				LOGGEDIN = True
+	#Must close the cursor here, but the connection is closed in main.py. If program doesn't end up in main.py, must close it in your file.
+	cursor.close()
 	if(not LOGGEDIN):
 		os.system("clear")
 		print("Username and/or Password Incorrect")
+	else:
+		return username
 	
-
-
-	#Must close the cursor here, but the connection is closed in main.py. If program doesn't end up in main.py, must close it in your file.
-	cursor.close()
+ 
 
 
 def getUsername():
