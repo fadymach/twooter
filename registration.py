@@ -5,7 +5,6 @@ def register(connection):
 	os.system("clear")
 	print('\n'+"Twooter User Registration")
 	print("-------------------------------------------------------------")
-
 	getUsr(connection)
 
 
@@ -56,11 +55,6 @@ def createUsr(connection, name, email, city, timezone, password, maxID):
 		{'id':maxID+1, 'password':password, 'name':name, 'email':email, \
 		'city':city, 'timezone':timezone})
 
-	#insert_statement = "INSERT INTO users " \
-		#"VALUES (" +str(maxID+1)+ "," +password+ "," +name+ "," +email+ "," \
-		#+city+ "," +str(timezone)+ ")"
-	#cursor.execute(insert_statement)
-
 	# Review account before commit
 	os.system("clear")
 	print("Review your account")
@@ -79,8 +73,6 @@ def createUsr(connection, name, email, city, timezone, password, maxID):
 		connection.commit()
 		cursor.close()
 		return maxID + 1
-		# CALL HOME SCREEN
 	elif (confirm == "no") or (confirm == "n"):
 		cursor.close()
-		register(connection)
-		# RETURN TO LOGIN SCREEN
+		return None
