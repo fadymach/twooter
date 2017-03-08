@@ -12,16 +12,22 @@ def menu(connection):
 		cmd = input('\n' + " ENTER A VALID COMMAND: ").strip().lower()
 
 	if cmd == "fe":
+		pass
 		# CALL FEED
 	elif cmd == "fo":
+		pass
 		# CALL FOLLOWERS
 	elif cmd == "ct":
+		pass
 		# CALL COMPOSE TWOOT
 	elif cmd == "st":
+		pass
 		# CALL SEARCH TWOOT
 	elif cmd == "su":
+		pass
 		# CALL SEARCH USERS
 	elif cmd == "ml":
+		pass
 		# CALL MANAGE LISTS
 	elif cmd == "exit":
 		connection.close()
