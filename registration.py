@@ -78,7 +78,9 @@ def createUsr(connection, name, email, city, timezone, password, maxID):
 	if (confirm == "yes") or (confirm == "y"):
 		connection.commit()
 		cursor.close()
+		return maxID + 1
 		# CALL HOME SCREEN
 	elif (confirm == "no") or (confirm == "n"):
 		cursor.close()
+		register(connection)
 		# RETURN TO LOGIN SCREEN

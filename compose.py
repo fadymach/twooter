@@ -93,15 +93,20 @@ def addToHashtags(tag, tid, connection):
 	tags_cursor = connection.cursor()
 	tagsList = tags_cursor.execute(get_tags_query)
 	tagsList = tagsList.fetchall()
+	#if tag not in db, add tag to db
+	newHashtag = True
 	for each in tagsList:
-		if(tag == each[0].strip()):
-			addToMentions(tag, tid, connection)
-		else:
-			add_tags_query = "INSERT INTO hashtags VALUES (:tag)"
-			tags_cursor.execute(add_tags_query, {'tag': tag})
-			connection.commit()
-			addToMentions(tag, tid, connection)
-			connection.commit()
+		if each[0].strip() == tag:
+			newHashtag = False
+			break
+	if newHashtag:
+		add_tags_query = "INSERT INTO hashtags VALUES (:tag)"
+		tags_cursor.execute(add_tags_query, {'tag': tag})
+		connection.commit()
+
+	#add tag to mentions
+	addToMentions(tag, tid, connection)
+	connection.commit()
 
 
 def addToMentions(tag, tid, connection):

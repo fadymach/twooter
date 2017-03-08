@@ -1,4 +1,5 @@
 import getpass
+import registration
 import os
 
 def main(connection):
@@ -20,8 +21,7 @@ def main(connection):
 			username = login(connection)
 			input_valid = True
 		elif choice.strip().lower() == 'r' or choice.strip().lower() == "register":
-			#Call register function here. 
-			print("This is the register option, delete this line when added a proper function")
+			username = registration.register(connection)
 			input_valid = True
 		elif choice.strip().lower() == "exit":
 			quit()
