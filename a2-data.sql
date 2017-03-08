@@ -609,6 +609,8 @@ insert into tweets values (48,118,'25-JAN-2016','Dandelions use latex to protect
 insert into tweets values (49,125,'16-FEB-2016','No wonder they are so difficult to get rid of!',48);
 
 insert into hashtags values ('helloworld');
+insert into hashtags values ('oilers');
+insert into hashtags values ('poncho');
 insert into hashtags values ('tardigrade');
 insert into hashtags values ('gross');
 insert into hashtags values ('survivor');
@@ -646,7 +648,7 @@ insert into mentions values (11,'science');
 insert into mentions values (12,'weather');
 insert into mentions values (13,'poncho');
 insert into mentions values (14,'scary');
-insert into mentions values (15,'#tweettweet');
+insert into mentions values (15,'tweettweet');
 insert into mentions values (16,'science');
 insert into mentions values (17,'dinosaurs');
 insert into mentions values (17,'science');
