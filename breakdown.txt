@@ -5,20 +5,17 @@ Conventions:
 Screens :
 
 Fady
-Database connection
---Login (TODO - Add functionality after logged in) 
 Reply/Compose (same as compose w/ modifications?) Must be able to parse tweet for hashtags.
 List followers (w/ option to select follower)
-Create list
 
 
 Matt
-Main Menu
-User registration
 Search for tweets
 User information and 3 most recent tweets
 Manage List
+Create list
 List of lists usr has created
+Modify list
 
 
 Alex
@@ -26,4 +23,4 @@ Home (5 most recent tweets)
 Individual tweet (w/ stats, option to reply, and option to re-tweet)
 Search for users
 See lists usr is on
-Modify list
+
