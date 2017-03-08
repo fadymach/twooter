@@ -5,7 +5,7 @@
 import cx_Oracle as cx
 import getpass as gp
 import os
-import registration
+import searchTwoots
 
 def main():
 
@@ -22,7 +22,7 @@ def main():
 	
 	os.system("clear")
 	
-	registration.register(con)
+	searchTwoots.searchTwoots(con)
 	
 	# Close cursor and connection
 	con.close()

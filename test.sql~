@@ -1,0 +1,5 @@
+-- SEE LISTS CURRENT USER IS ON
+SELECT DISTINCT lname AS "List"
+FROM includes i
+WHERE i.member = 0;
+-- replace 0 with current user
