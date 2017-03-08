@@ -6,19 +6,20 @@ import os
 def create(connection, usr):
 	cursor = connection.cursor()
 
-	tid = getTweets(connection)
+	tid = getTid(connection)
 
 	writer = usr
 	tdate = time.strftime("%d-%b-%Y")
 	text = input("Your Twoot: ")
 
-	INCLUDESHASHTAGS = False
+	
 	tags = checkforHashtags(text)
 	if(tags != []):
 		INCLUDESHASHTAGS = True
+	else:
+		INCLUDESHASHTAGS = False
 		
 		
-
 	INTFLAG = False
 	INPUTVALID = False
 	while(not INPUTVALID):
@@ -46,9 +47,9 @@ def create(connection, usr):
 		else:
 			print("Please choose an option")
 
+
+
 	query = "INSERT INTO tweets VALUES (:1, :2, :3, :4, :5)"
-
-
 	#Does this need to show the list of tweets that a person can reply to? Not specified. I'm not sure.
 	try: 
 		cursor.execute(query, (tid, writer, tdate, text, replyto))
@@ -56,19 +57,22 @@ def create(connection, usr):
 		print("Twoot was not created, sorry. Try again")
 	else:
 		print("Twoot was created!")
+		connection.commit()
 		if(INCLUDESHASHTAGS):
 			for each in tags:
-				tag = addToHashtags(each, connection)
+				tag = addToHashtags(each, tid, connection)
 				if (tag == None):
-					addToMentions(each, tid, connection)
+					# addToMentions(each, tid, connection)
+					pass
 				else:
-					addToMentions(tag, tid, connection)
+					# addToMentions(tag, tid, connection)
+					pass
 	finally:
 		connection.commit()
 		cursor.close()
 
 
-def getTweets(connection):
+def getTid(connection):
 	#This function gets the largest number from the tweet ids. It will then add one to that number
 	# and return it so that the new twoot can have a unique id
 	get_query = "SELECT max(tid) from tweets"
@@ -84,28 +88,25 @@ def checkforHashtags(text):
 	return hashtags
 
 
-def addToMentions(tag, tid, connection):
-	
-	add_query = "INSERT INTO mentions VALUES (:tid, :tag)"
-	add_cursor = connection.cursor()
-	add_cursor.execute(add_query, {'tid' : tid, 'tag' : tag})
-	connection.commit()
-	add_cursor.close()
-
-def addToHashtags(tag, connection):
+def addToHashtags(tag, tid, connection):
 	get_tags_query = "SELECT * FROM hashtags"
-	add_tags_query = "INSERT INTO hashtags VALUES (:tag)"
 	tags_cursor = connection.cursor()
-	tagList = tags_cursor.execute(get_tags_query).fetchall()
-
-	for each in tagList:
-		if tag == each[0]:
-			value = tag
+	tagsList = tags_cursor.execute(get_tags_query)
+	tagsList = tagsList.fetchall()
+	for each in tagsList:
+		if(tag == each[0].strip()):
+			addToMentions(tag, tid, connection)
 		else:
-			#TODO DOESNT WORK 
+			add_tags_query = "INSERT INTO hashtags VALUES (:tag)"
 			tags_cursor.execute(add_tags_query, {'tag': tag})
-			value = None
+			connection.commit()
+			addToMentions(tag, tid, connection)
+			connection.commit()
 
+
+def addToMentions(tag, tid, connection):
+	mention_query = "INSERT INTO mentions VALUES (:tid, :tag)"
+	mention_cursor = connection.cursor()
+	mention_cursor.execute(mention_query, {'tid': tid, 'tag': tag})
 	connection.commit()
-	tags_cursor.close()
-	return value 
+	mention_cursor.close()

@@ -63,6 +63,7 @@ def login(connection):
 	if(not LOGGEDIN):
 		os.system("clear")
 		print("Username and/or Password Incorrect")
+		exit()
 	else:
 		return username
 	
