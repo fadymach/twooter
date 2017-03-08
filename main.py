@@ -1,6 +1,6 @@
 import cx_Oracle
 import getpass
-import twitterLogin
+import logReg
 import os
 import compose
 
@@ -27,7 +27,7 @@ def main():
 		print(cx_Oracle.DatabaseError.message)
 	else:
 		os.system("clear")
-		twitterLogin.main(connection)
+		logReg.main(connection)
 	finally:
 		connection.close()
 		cursor.close()
@@ -43,7 +43,7 @@ def debugMain():
 		print(cx_Oracle.DatabaseError.message)
 	else:
 		os.system("clear")
-		usr = twitterLogin.main(connection)
+		usr = logReg.main(connection)
 		compose.create(connection, usr)
 	finally:
 		print("Program ended up in main.py -- The connection is closed properly")
