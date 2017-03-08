@@ -3,7 +3,7 @@ import time
 import cx_Oracle
 import os 
 
-def create(connection, usr):
+def create(connection, usr, replyto=None):
 	cursor = connection.cursor()
 
 	tid = getTid(connection)
@@ -19,35 +19,6 @@ def create(connection, usr):
 	else:
 		INCLUDESHASHTAGS = False
 		
-		
-	INTFLAG = False
-	INPUTVALID = False
-	while(not INPUTVALID):
-		reply = input("Is this twoot a reply to someone? (yes, no) ")
-		os.system("clear")
-		if reply.strip().lower() == 'y' or reply.strip().lower() == "yes":
-			while(not INTFLAG):
-				try: 
-					replyto = input("Reply to which tweet? ")
-					test = int(replyto)
-				except ValueError:
-					os.system("clear")
-					print("Please enter an integer")
-					continue
-				else:
-					INTFLAG = True
-					break
-			INPUTVALID = True
-		elif reply.strip().lower() == 'n' or reply.strip().lower() == "no":
-			replyto = None
-			INPUTVALID = True
-		elif reply.strip().lower() == "exit":
-			print("Twoot was not created. Exiting")
-			quit()
-		else:
-			print("Please choose an option")
-
-
 
 	query = "INSERT INTO tweets VALUES (:1, :2, :3, :4, :5)"
 	#Does this need to show the list of tweets that a person can reply to? Not specified. I'm not sure.

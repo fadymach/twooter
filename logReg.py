@@ -15,19 +15,19 @@ def main(connection):
 
 		print("Welcome to Twooter")
 		
-
 		choice = input("Login(l) or Register(r)? ")
 		if choice.strip().lower() == 'l' or choice.strip().lower() == "login":
 			username = login(connection)
 			input_valid = True
 		elif choice.strip().lower() == 'r' or choice.strip().lower() == "register":
 			username = registration.register(connection)
-			input_valid = True
+			if (username != None):
+				input_valid = True
 		elif choice.strip().lower() == "exit":
 			quit()
 		else:
 			print("Please choose an option")
-	return username
+	return username 
 
 
 def login(connection):

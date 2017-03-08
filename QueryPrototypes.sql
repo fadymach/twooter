@@ -1,4 +1,4 @@
--- HOMEPAGE:        all tweets and retweets from followed users; ordered descending by date
+-- FEED:        all tweets and retweets from followed users; ordered descending by date
 SELECT tid, writer, tdate
 FROM
 	follows f, 
