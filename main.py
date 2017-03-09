@@ -31,10 +31,9 @@ def main():
 	else:
 		os.system("clear")
 		usr = logReg.main(connection)
-		feed(usr, connection)
+		feed.feed(usr, connection)
 	finally:
 		connection.close()
-		cursor.close()
 
 
 
@@ -56,5 +55,5 @@ def debugMain():
 		connection.close()
 
 
-# main()
+#main()
 debugMain()
