@@ -3,7 +3,7 @@ import time
 import cx_Oracle
 import os 
 
-def create(connection, usr, replyto=None):
+def create(usr, connection, replyto = None):
 	cursor = connection.cursor()
 
 	tid = getTid(connection)

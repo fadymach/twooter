@@ -5,7 +5,6 @@ Conventions:
 Screens :
 
 Fady
-Reply/Compose (same as compose w/ modifications?) Must be able to parse tweet for hashtags.
 List followers (w/ option to select follower)
 userSearch
 userInfo

@@ -54,9 +54,7 @@ def login(connection):
 		credentials = (username, password)
 		for row in rows:
 			if(credentials == row):
-				os.system("clear")
-				#TODO
-				print("Login Success -- Need to add functionality here")	
+				os.system("clear")	
 				LOGGEDIN = True
 	#Must close the cursor here, but the connection is closed in main.py. If program doesn't end up in main.py, must close it in your file.
 	cursor.close()

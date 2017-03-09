@@ -4,6 +4,8 @@ import logReg
 import os
 import compose
 import feed
+import followers
+
 
 #Reads username and password from file. Format it with username and password on their own line
 def getCredentials():
@@ -46,8 +48,9 @@ def debugMain():
 	else:
 		os.system("clear")
 		usr = logReg.main(connection)
-		feed.feed(usr, connection)
-		#compose.create(connection, usr)
+		followers.followers(usr, connection)
+		# feed.feed(usr, connection)
+		#compose.create(usr, connection)
 	finally:
 		print("Program ended up in main.py -- The connection is closed properly")
 		connection.close()
