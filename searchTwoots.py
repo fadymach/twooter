@@ -1,18 +1,15 @@
 import cx_Oracle as cx
-import os
-import textwrap
+import os, re, textwrap
 
 def searchTwoots(connection):
 	# Allows a user to search for twoots
 	printScreen()
-	keywords = getKeywords()
-	results = executeQuery(connection, keywords)
+	keywords, hashtags = getKeywords()
+	results = executeQuery(connection, keywords, hashtags)
 
 	printScreen()
 
 	for i in range(len(results)):
-		if results[i][3] != None:
-			print("Reply to: " + str(results[i][3])) # Reply to
 		print("---------------------------------------------------")
 		print(str(results[i][0]) + '\t'*2 + str(results[i][1])) # User and date
 		print(textwrap.fill(results[i][2], 50)) # Text
@@ -22,31 +19,51 @@ def searchTwoots(connection):
 
 
 
-def executeQuery(connection, keywords):
-	# Create string for query WHERE clause
-	whereClause = "WHERE ((LOWER(text) LIKE "
-	countWords = len(keywords)
-
-	# Build WHERE clause
-	i = 0
-	for word in keywords:
-		if i == 0:
-			print(word)
-			whereClause += "'%"+word+"%')"
-			i += 1
-		else:
-			whereClause += " OR (LOWER(text) LIKE '%"+word+"%')"
-	whereClause += ") AND (t.writer = u1.usr) "
-
-	# Create and execute query
-	query = "SELECT u1.name, t.tdate, t.text, u2.name " \
-			"FROM users u1, tweets t " \
-			"LEFT OUTER JOIN users u2 ON t.replyto = u2.usr " + whereClause
+def executeQuery(connection, keywords, hashtags):
 	
+	# Build first WHERE clause and query
+	if len(keywords) > 0:
+		whereClause1 = "WHERE ((LOWER(t1.text) LIKE "
+		i = 0
+		for word in keywords:
+			if i == 0:
+				whereClause1 += "'%"+word+"%')"
+				i += 1
+			else:
+				whereClause1 += " OR (LOWER(text) LIKE '%"+word+"%')"
+		whereClause1 += ") AND (t1.writer = u1.usr) "
 
-	print(query)
+	query1 = "SELECT u1.name, t1.tdate, t1.text, t1.tid " \
+			"FROM users u1, tweets t1 " +whereClause1
+
+	# Build second WHERE clause and query
+	if len(hashtags) > 0:
+		whereClause2 = "WHERE m.term IN ("
+		i = 0
+		for word in hashtags:
+			i += 1
+			if i != len(hashtags):
+				whereClause2 += "'"+word+"',"
+			else:
+				whereClause2 += "'"+word+"') "
+		whereClause2 += "AND (m.tid = t2.tid) AND (t2.writer = u2.usr)"
+
+		query2 = "SELECT u2.name, t2.tdate, t2.text, t2.tid " \
+				"FROM users u2, tweets t2, mentions m " +whereClause2
+
+
+	# Combine queries if there are both keywords and hashtags
+	if (len(keywords) > 0) and (len(hashtags) > 0):
+		queryUnion = "("+query1+") UNION ("+query2+")"
+	elif (len(keywords) > 0) and (len(hashtags) == 0):
+		queryUnion = query1
+	elif (len(keywords) == 0) and (len(hashtags) > 0):
+		queryUnion = query2
+
+
+	# Execute query
 	cursor = connection.cursor()
-	cursor.execute(query)
+	cursor.execute(queryUnion)
 	results = cursor.fetchall()
 	cursor.close()
 
@@ -55,7 +72,14 @@ def executeQuery(connection, keywords):
 
 def getKeywords():
 	usrInput = input("Enter space-separated keyword(s) to search for:" + '\n')
-	return usrInput.lower().strip().split()
+	keywords = usrInput.lower().strip().split()
+	hashtags = []
+	
+	for word in keywords:
+		if re.match("#.*", word) != None:
+			hashtags.append(word[1:])
+	
+	return keywords, hashtags
 
 def printScreen():
 	os.system("clear")

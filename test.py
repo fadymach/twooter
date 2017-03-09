@@ -27,10 +27,6 @@ def main():
 	# Close cursor and connection
 	con.close()
 
-	clear = input("Clear screen? (y/n) ")
-	if clear == "y":
-		os.system('clear')
-
 
 if __name__ == '__main__':
 	main()
