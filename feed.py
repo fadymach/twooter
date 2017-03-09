@@ -1,19 +1,20 @@
 # initial feed; pages of 5 tweets, option of more info.
 import cx_Oracle as cx
 import textwrap, os
+import searchTwoots, compose
 
 def feed(usr, connection):
 
 	test = "SELECT tid, writer, tdate FROM follows f, (select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text from tweets t, retweets r where t.tid = r.tid UNION select tid, writer, tdate, text from tweets) WHERE writer = f.flwee AND f.flwer = :usr"
 	query = "SELECT tid, u.name AS author, tdate, text, u1.name AS replyto, rt " \
-			"FROM follows f, users u, " \
+			"FROM users u, (select flwer, flwee from follows union select :usr as flwer, :usr as flwee from dual), " \
 				"(select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text, t.replyto as replyto, '1' as rt " \
 				 "from tweets t, retweets r " \
 				 "where t.tid = r.tid " \
 			"UNION " \
 				"select tid, writer, tdate, text, replyto, '0' as rt from tweets) " \
 				"LEFT OUTER JOIN users u1 ON replyto = u1.usr " \
-				 "WHERE writer = f.flwee AND f.flwer = :usr AND u.usr = writer " \
+				 "WHERE writer = flwee AND flwer = :usr AND u.usr = writer " \
 			"ORDER BY tdate DESC"
 
 	
@@ -28,8 +29,14 @@ def feed(usr, connection):
 		print('\n'+system_message)
 		system_message = ""
 
-		userin = input("Selection:").lower()
-		if userin=='next':
+		userin = input("Selection: ").lower()
+		if userin=='new':
+			# create new twoot
+			compose.create(usr, connection)
+			# refresh feed data
+			cursor.execute(query, {'usr':usr})
+			twootdata = cursor.fetchmany(numRows = 5)
+		elif userin=='next':
 			newdata = cursor.fetchmany(numRows = 5)
 			if newdata == []:
 				display(twootdata, 5)
@@ -39,7 +46,20 @@ def feed(usr, connection):
 		elif userin=='top':
 			cursor.execute(query, {'usr':usr})
 			twootdata = cursor.fetchmany(numRows = 5)
+		elif userin=='search':
+			searchin = input("Search for users (u) or tweets (t)? (c to cancel)").lower()
+			if searchin=='u':
+				system_message = "user "
+			elif searchin=='t':
+				searchTwoots.searchTwoots(connection)
+			elif searchin=='c':
+				pass
+			else:
+				system_message = "INVALID INPUT: "
+			system_message += "Search Canceled"
+
 		elif userin=='exit':
+			cursor.close()
 			return
 		else:
 			display(twootdata, 5)
@@ -74,6 +94,8 @@ def display(twootdata, n):
 	print('|' + "-"*55)
 	print('/'*56)
 	print("Navigation\n"\
+		"new: \tCompose a new Twoot.\n"
 		"next:\tDisplay "+str(n)+" more Twoots.\n"\
-		"top: \tReturn to top of feed.\n"
+		"top: \tReturn to top of feed.\n"\
+		"search:\tSearch for users or individual twoots.\n"
 		"exit:\tClose Twooter.")
