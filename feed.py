@@ -1,34 +1,44 @@
 # initial feed; pages of 5 tweets, option of more info.
 import cx_Oracle as cx
+import textwrap
 
 def feed(usr, connection):
 
 	test = "SELECT tid, writer, tdate FROM follows f, (select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text from tweets t, retweets r where t.tid = r.tid UNION select tid, writer, tdate, text from tweets) WHERE writer = f.flwee AND f.flwer = :usr"
-	query = "SELECT tid, u.name AS author, tdate, text, replyto " \
+	query = "SELECT tid, u.name AS author, tdate, text, u1.name AS replyto, rt " \
 			"FROM follows f, users u, " \
-				"(select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text, t.replyto as replyto " \
+				"(select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text, t.replyto as replyto, '1' as rt " \
 				 "from tweets t, retweets r " \
 				 "where t.tid = r.tid " \
 			"UNION " \
-				"select tid, writer, tdate, text, replyto from tweets) " \
-				 "WHERE writer = f.flwee AND f.flwer = :usr AND u.usr = writer "
+				"select tid, writer, tdate, text, replyto, '0' as rt from tweets) " \
+				"LEFT OUTER JOIN users u1 ON replyto = u1.usr " \
+				 "WHERE writer = f.flwee AND f.flwer = :usr AND u.usr = writer " \
+			"ORDER BY tdate DESC"
 
 	
 
 	cursor = connection.cursor()
 	cursor.execute(query, {'usr':usr})
 
-	print(cursor.fetchmany(numRows = 5))	
+	twootdata = cursor.fetchmany(numRows = 100)
 
+	# each twoot consists of tid, author, date, text, replyto, and rt
+	#						  0		1		2	  3		4			5
 
-	# for i in range(len(results)):
-	# if results[i][3] != None:
-	# 	print("Reply to: " + str(results[i][3])) # Reply to
-	# print("---------------------------------------------------")
-	# print(str(results[i][0]) + '\t'*2 + str(results[i][1])) # User and date
-	# print(textwrap.fill(results[i][2], 50)) # Text
-	# print('\n')
-	# i += 1
+	for twoot in twootdata:
+		print('|' + "-"*55)
+		print('|' + twoot[1].strip(), end=' ')
+		if twoot[5] == '1': # if it is a retwoot
+			print('retwooted:')
+		elif twoot[4] != None:
+			print('replied to ' + str(twoot[4]).strip() + ':')
+		else:
+			print('twooted:')
+		print('|' + '\n|'.join(textwrap.wrap(twoot[3], 50)))
+		print('|' + '\t'*4 + 'on ' + twoot[2].strftime('%Y-%m-%d'), end='') #date
+		print(' at ' + twoot[2].strftime('%I:%M%p'))
 
-	print("-----------------------------------------------------")
+	print('|' + "-"*55)
+	print('/'*56)
 	print("Navigation")

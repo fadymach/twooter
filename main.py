@@ -47,8 +47,8 @@ def debugMain():
 	else:
 		os.system("clear")
 		usr = logReg.main(connection)
-		followers.followers(usr, connection)
-		# feed.feed(usr, connection)
+		#followers.followers(usr, connection)
+		feed.feed(usr, connection)
 		#compose.create(usr, connection)
 	finally:
 		print("Program ended up in main.py -- The connection is closed properly")

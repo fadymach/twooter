@@ -1,5 +1,25 @@
--- SEE LISTS CURRENT USER IS ON
-SELECT DISTINCT lname AS "List"
-FROM includes i
-WHERE i.member = 0;
--- replace 0 with current user
+--SELECT tid, u.name AS author, tdate, text, replyto, rt
+SELECT tid, u.name AS author, tdate, replyto, rt
+FROM follows f, users u,
+	(	select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text, t.replyto as replyto, '1' as rt
+		from tweets t, retweets r
+		where t.tid = r.tid
+			UNION
+		select tid, writer, tdate, text, replyto, '0' as rt from tweets
+	)
+WHERE writer = f.flwee AND f.flwer = 200 AND u.usr = writer
+order by tid
+;
+
+--SELECT tid, u.name AS author, tdate, text, replyto, rt
+SELECT tid, u.name AS author, tdate, text, u1.name as replyto, rt
+FROM follows f, users u,
+	(	select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text, t.replyto as replyto, '1' as rt
+		from tweets t, retweets r
+		where t.tid = r.tid
+			UNION
+		select tid, writer, tdate, text, replyto, '0' as rt from tweets
+	) LEFT OUTER JOIN users u1 ON replyto = u1.usr
+WHERE writer = f.flwee AND f.flwer = 200 AND u.usr = writer
+order by tid
+;

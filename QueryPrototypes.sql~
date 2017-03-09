@@ -7,7 +7,8 @@ FROM follows f, users u,
 			UNION
 		select tid, writer, tdate, text, replyto, '0' as rt from tweets
 	) LEFT OUTER JOIN users u1 ON replyto = u1.usr
-WHERE writer = f.flwee AND f.flwer = :usr AND u.usr = writer
+WHERE writer = f.flwee AND f.flwer = 200 AND u.usr = writer
+order by tid
 ;
 --replace 122 with id of user currently logged in
 
