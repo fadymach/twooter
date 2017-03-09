@@ -5,18 +5,30 @@ def searchTwoots(connection):
 	# Allows a user to search for twoots
 	printScreen()
 	keywords, hashtags = getKeywords()
-	results = executeQuery(connection, keywords, hashtags)
+	cursor = executeQuery(connection, keywords, hashtags)
+	
+	results = cursor.fetchmany(numRows=5)
+	allowedTID = getTID(results) # Commands user is allowed to input
 
-	printScreen()
-
-	for i in range(len(results)):
-		print("---------------------------------------------------")
-		print(str(results[i][0]) + '\t'*2 + str(results[i][1])) # User and date
-		print(textwrap.fill(results[i][2], 50)) # Text
-		print('\n')
-		i += 1
-
-
+	cmd = printResults(results)
+	
+	while True:
+		while cmd not in ("menu", "more", "sel"):
+			cmd = input("Invalid command! Command: ")
+	
+		if cmd == "menu":
+			break
+		elif cmd == "more":
+			results = cursor.fetchmany(numRows=5)
+			printScreen()
+			cmd = printResults(results)
+		elif cmd == "sel":
+			allowedTID = getTID(results)
+			tid = int(input("Enter twoot ID (TID): "))
+			while tid not in allowedTID:
+				tid = int(input("Enter a valid ID!: "))
+			# CALL TWOOT INFO
+			break
 
 
 def executeQuery(connection, keywords, hashtags):
@@ -60,14 +72,15 @@ def executeQuery(connection, keywords, hashtags):
 	elif (len(keywords) == 0) and (len(hashtags) > 0):
 		queryUnion = query2
 
+	# Add ORDER BY clause
+	queryComplete = "SELECT * FROM ("+queryUnion+") ORDER BY 2 DESC"
+
 
 	# Execute query
 	cursor = connection.cursor()
-	cursor.execute(queryUnion)
-	results = cursor.fetchall()
-	cursor.close()
+	cursor.execute(queryComplete)
 
-	return results
+	return cursor
 	
 
 def getKeywords():
@@ -78,10 +91,34 @@ def getKeywords():
 	for word in keywords:
 		if re.match("#.*", word) != None:
 			hashtags.append(word[1:])
-	
 	return keywords, hashtags
+
+def getTID(results):
+	# Get CMDs that user is allowed to use
+	tids = []
+	for result in results:
+		tids.append(result[3])
+	return tids
+
+def printResults(results):
+	printScreen()
+	for i in range(len(results)):
+		print("-----------------------------------------------------------")
+		print("TID:" + str(results[i][3]) +"|"+'\t'+ str(results[i][0]) \
+			+ '\t'*2 + str(results[i][1])) # TID, user, and date
+		print(textwrap.fill(results[i][2], 50)) # Text
+		print('\n')
+		i += 1
+
+	print('\n' + "Navigation		Command")
+	print("-------------------------------------------------------------")
+	print("Return to feed:		menu")
+	print("Show more twoots:	more")
+	print("Select twoot:		sel")
+	cmd = input("Command:		")
+	return cmd
 
 def printScreen():
 	os.system("clear")
 	print("Search Twoots")
-	print("-------------------------------------------------------------" + '\n')
+	print("-------------------------------------------------------------")
