@@ -2,11 +2,12 @@ import time
 import os
 import cx_Oracle
 
-def followers(usr, connection):
+def followers(usr, connection, rows = None):
 	#This query selects the id and name of the users that follows the input of :usr
 	query = "SELECT u.usr, u.name FROM FOLLOWS f, users u WHERE f.flwer = u.usr and FLWEE = :usr"
 	cursor = connection.cursor()
-	rows = cursor.execute(query, {'usr': usr}).fetchall()
+	if(rows == None):
+		rows = cursor.execute(query, {'usr': usr}).fetchall()
 	printList(rows)
 	VALIDINPUT = False
 	while (not VALIDINPUT):
@@ -23,7 +24,10 @@ def followers(usr, connection):
 		else: 
 			if(selection > len(rows) or selection < 1):
 				os.system("clear")
-				printList(rows)
+				if(searchFlag == True):
+					printList(rows)
+				else:
+					printList(rows)
 				print("Make a valid selection, please")
 				continue
 			else:

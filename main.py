@@ -5,6 +5,7 @@ import os
 import compose
 import feed
 import followers
+import userSearch
 
 
 #Reads username and password from file. Format it with username and password on their own line
@@ -48,8 +49,9 @@ def debugMain():
 		os.system("clear")
 		usr = logReg.main(connection)
 		#followers.followers(usr, connection)
-		feed.feed(usr, connection)
+		# feed.feed(usr, connection)
 		#compose.create(usr, connection)
+		userSearch.search(usr, connection)
 	finally:
 		print("Program ended up in main.py -- The connection is closed properly")
 		connection.close()
