@@ -5,14 +5,14 @@
 import cx_Oracle as cx
 import getpass as gp
 import os
-import searchTwoots
+import lists
 
 def main():
 
 	os.system("clear")
 
 	print("Oracle connection:")
-	print("-----------------------------------------------------------"+'\n')
+	print('-'*56 +'\n')
 	
 	# Get Oracle credentials
 	usr_oracle = input("Oracle username: ")
@@ -22,7 +22,7 @@ def main():
 	
 	os.system("clear")
 	
-	searchTwoots.searchTwoots(con)
+	lists.manageLists(5, con)
 	
 	# Close cursor and connection
 	con.close()

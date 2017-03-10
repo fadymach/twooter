@@ -11,7 +11,6 @@ userInfo
 
 
 Matt
-User information and 3 most recent tweets
 Manage List
 Create list
 List of lists usr has created

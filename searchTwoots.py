@@ -12,10 +12,11 @@ def searchTwoots(usr, connection):
 	
 	# Get user input
 	allowedTID = getTID(results) # IDs user is allowed to input
+	allowedCMD = ("back", "more", "sel")
 	while True:
 		printResults(results)
 		cmd = input("Selection: ").lower()
-		while cmd not in ("back", "more", "sel"):
+		while cmd not in allowedCMD:
 			cmd = input("Invalid selection! Selection: ")
 	
 		if cmd == "back":
