@@ -6,6 +6,7 @@ import followers
 ###
 
 def search(usr, connection):
+	os.system("clear")
 	keywords = getKeywords()
 	cursor = connection.cursor()
 	nameQuery = buildNameQuery(keywords)

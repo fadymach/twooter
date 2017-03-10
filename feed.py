@@ -1,7 +1,7 @@
 # initial feed; pages of 5 tweets, option of more info.
 import cx_Oracle as cx
 import textwrap, os
-import searchTwoots, compose, followers, twootInfo
+import searchTwoots, compose, followers, twootInfo, userSearch
 
 def feed(usr, connection):
 	showTID = False
@@ -69,9 +69,9 @@ def feed(usr, connection):
 		elif userin=='search':
 			searchin = input("Search for users (u) or tweets (t)? (c to cancel)").lower()
 			if searchin=='u':
-				system_message = "user "
+				userSearch.search(usr, connection)
 			elif searchin=='t':
-				searchTwoots.searchTwoots(connection)
+				searchTwoots.searchTwoots(usr, connection)
 			elif searchin=='c':
 				pass
 			else:
