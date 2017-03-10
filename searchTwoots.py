@@ -3,6 +3,7 @@ import os, re, textwrap
 import twootInfo
 
 def searchTwoots(usr, connection):
+	msg = ""
 	# Allows a user to search for twoots
 	printHeader()
 	keywords, hashtags = getKeywords()
@@ -15,6 +16,7 @@ def searchTwoots(usr, connection):
 	allowedCMD = ("back", "more", "sel")
 	while True:
 		printResults(results)
+		print(msg)
 		cmd = input("Selection: ").lower()
 		while cmd not in allowedCMD:
 			cmd = input("Invalid selection! Selection: ")
@@ -22,8 +24,11 @@ def searchTwoots(usr, connection):
 		if cmd == "back":
 			break
 		elif cmd == "more":
-			results = cursor.fetchmany(numRows=5)
-			printResults(results)
+			newresults = cursor.fetchmany(numRows=5)
+			if newresults != []:
+				results = newresults
+			else:
+				msg = "No more results to show."
 		elif cmd == "sel":
 			allowedTID = getTID(results)
 			tid = int(input("Enter twoot ID (TID): "))
@@ -103,19 +108,20 @@ def getTID(results):
 
 def printResults(results):
 	printHeader()
-	for i in range(len(results)):
-		print("-----------------------------------------------------------")
-		print("TID:" + str(results[i][3]) +"|"+'\t'+ str(results[i][0]) \
-			+ '\t'*2 + str(results[i][1])) # TID, user, and date
-		print(textwrap.fill(results[i][2], 50)) # Text
-		print('\n')
-		i += 1
+	if results == []:
+		print("No twoots found.\n\nActions:\nback:\tReturn to feed.")
+		return
+	for twoot in results:
+		print(str(twoot[0]) + " wrote:\t\t" \
+			+ str(twoot[1]))# user and date
+		print(textwrap.fill(twoot[2], 50)) # Text
+		print('\t'*6 + "TID:" + str(twoot[3])) #TID
+		print("-"*56)
 
-	print("-------------------------------------------------------------")
 	print("Actions:\nback: \tReturn to feed.\nmore:\tShow more twoots.\n" \
         "sel:\tSelect twoot.\n")
 
 def printHeader():
 	os.system("clear")
-	print("Search Twoots")
-	print("-------------------------------------------------------------")
+	print("Twoot Search")
+	print("-"*56)

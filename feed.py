@@ -6,18 +6,16 @@ import searchTwoots, compose, followers, twootInfo, userSearch, lists
 def feed(usr, connection):
 	showTID = False
 
-	query = "SELECT tid, u.name AS author, tdate, text, u1.name AS replyto, rt " \
+	query = "SELECT tid, u.name AS author, tdate, text, repname AS replyto, rt " \
 			"FROM users u, (select flwer, flwee from follows union select :usr as flwer, :usr as flwee from dual), " \
 				"(select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text, t.replyto as replyto, '1' as rt " \
 				 "from tweets t, retweets r " \
 				 "where t.tid = r.tid " \
 			"UNION " \
 				"select tid, writer, tdate, text, replyto, '0' as rt from tweets) " \
-				"LEFT OUTER JOIN users u1 ON replyto = u1.usr " \
-				 "WHERE writer = flwee AND flwer = :usr AND u.usr = writer " \
+				"LEFT OUTER JOIN (select tid as reptid, name as repname from tweets, users where writer = usr) ON replyto = reptid " \
+			"WHERE writer = flwee AND flwer = :usr AND u.usr = writer " \
 			"ORDER BY tdate DESC"
-
-	
 
 	cursor = connection.cursor()
 	cursor.execute(query, {'usr':usr})
@@ -68,15 +66,18 @@ def feed(usr, connection):
 		elif userin=='search':
 			searchin = input("Search for users (u) or tweets (t)? (c to cancel)").lower()
 			if searchin=='u':
-				system_message = userSearch.search(usr, connection)
+				userSearch.search(usr, connection)
 			elif searchin=='t':
 				searchTwoots.searchTwoots(usr, connection)
+				# refresh feed data
+				cursor.execute(query, {'usr':usr})
+				twootdata = cursor.fetchmany(numRows = 5)
 			elif searchin=='c':
 				system_message += "Search Canceled"
 			else:
 				system_message = "INVALID INPUT: Search Canceled"
 		elif userin=='sheep':
-			system_message = followers.followers(usr, connection)
+			followers.followers(usr, connection)
 		elif userin=='list':
 			lists.manageLists(usr, connection)
 		elif userin=='exit':
@@ -111,8 +112,8 @@ def display(twootdata, n, showTID=False):
 			print('on ' + twoot[2].strftime('%Y-%m-%d'), end='') #date
 			print(' at ' + twoot[2].strftime('%I:%M%p'))
 
-	print('|' + "-"*55)
-	print('/'*56)
+	print('|' + "-"*55 + '\n')
+	print('#'*56)
 	if showTID!=True:
 		print("Navigation\n"\
 			"new: \tCompose a new Twoot.\n"\
@@ -121,5 +122,5 @@ def display(twootdata, n, showTID=False):
 			"top: \tReturn to top of feed.\n"\
 			"search:\tSearch for users or individual twoots.\n"\
 			"sheep:\tDisplay a list of your devoted followers.\n"\
-			"list:\tOpen list manager."
+			"list:\tOpen list manager.\n"
 			"exit:\tClose Twooter.")

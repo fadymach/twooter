@@ -6,22 +6,29 @@ import followers
 ###
 
 def search(usr, connection):
-	message = ""
-	os.system("clear")
-	keywords = getKeywords()
-	cursor = connection.cursor()
-	nameQuery = buildNameQuery(keywords)
-	cityQuery = buildCityQuery(keywords)
-	if(nameQuery != "" and cityQuery != ""):
+	message = ''
+	while(True):
+		keywords = ""
+		while keywords == "":
+			keywords = getKeywords(message)
+		cursor = connection.cursor()
+		nameQuery = buildNameQuery(keywords)
+		cityQuery = buildCityQuery(keywords)
+		if (nameQuery=="" or cityQuery==""):
+			continue
+
 		names = cursor.execute(nameQuery).fetchall()
 		names.sort(key = lambda x : len(x[1].strip()))
 		cities = cursor.execute(cityQuery).fetchall()
 		cities.sort(key = lambda t: len(t[2].strip()))
 
 		people = names + cities
+		if people==[]:
+			message = "No results found."
+			continue
 
-		message = followers.followers(usr, connection, people)
-	return message
+		followers.followers(usr, connection, people)
+		return
 
 
 
@@ -59,7 +66,9 @@ def buildCityQuery(keywords):
 
 
 
-def getKeywords():
+def getKeywords(message = ''):
+	os.system("clear")
+	print(message)
 	usrInput = input("Enter space-separated keyword(s) to search for:" + '\n')
 	keywords = usrInput.lower().strip().split()
 	return keywords
