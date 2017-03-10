@@ -13,7 +13,7 @@ def followers(usr, connection, rows = None):
 	while (not VALIDINPUT):
 		user_input = input(":" )
 		if(user_input == "exit"):
-			exit()
+			break
 		try:
 			selection = int(user_input)
 		except ValueError:
@@ -69,10 +69,9 @@ def seeMore(person, usr, connection):
 			input_valid = True
 		elif(choice.lower().strip() == 'f' or choice.lower().strip() == "follow"):
 			followPerson(usr, info.get("id"), connection)
-			pass
 			input_valid = True
 		elif(choice.lower().strip() == "exit"):
-			exit()
+			break
 		else:
 			print("Please enter a valid choice")
 
