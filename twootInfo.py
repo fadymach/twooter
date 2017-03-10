@@ -45,6 +45,7 @@ def info(usr, connection, tid):
 
 
 def display(data):
+    os.system("clear")
     print('-'*56)
     print('\n'.join(textwrap.wrap(data[4], 56)))
     bottom = "Written by " + data[2].strip() + " on " + data[3].strftime('%Y-%m-%d at %I:%M%p')

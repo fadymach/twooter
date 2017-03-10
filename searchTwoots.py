@@ -1,34 +1,34 @@
 import cx_Oracle as cx
 import os, re, textwrap
+import twootInfo
 
-def searchTwoots(connection):
+def searchTwoots(usr, connection):
 	# Allows a user to search for twoots
-	printScreen()
+	printHeader()
 	keywords, hashtags = getKeywords()
 	cursor = executeQuery(connection, keywords, hashtags)
 	
 	results = cursor.fetchmany(numRows=5)
-	allowedTID = getTID(results) # Commands user is allowed to input
-
-	cmd = printResults(results)
 	
+	# Get user input
+	allowedTID = getTID(results) # IDs user is allowed to input
 	while True:
-		while cmd not in ("menu", "more", "sel"):
-			cmd = input("Invalid command! Command: ")
+		printResults(results)
+		cmd = input("Selection: ").lower()
+		while cmd not in ("back", "more", "sel"):
+			cmd = input("Invalid selection! Selection: ")
 	
-		if cmd == "menu":
+		if cmd == "back":
 			break
 		elif cmd == "more":
 			results = cursor.fetchmany(numRows=5)
-			printScreen()
-			cmd = printResults(results)
+			printResults(results)
 		elif cmd == "sel":
 			allowedTID = getTID(results)
 			tid = int(input("Enter twoot ID (TID): "))
 			while tid not in allowedTID:
 				tid = int(input("Enter a valid ID!: "))
-			# CALL TWOOT INFO
-			break
+			twootInfo.info(usr, connection, tid)
 
 
 def executeQuery(connection, keywords, hashtags):
@@ -101,7 +101,7 @@ def getTID(results):
 	return tids
 
 def printResults(results):
-	printScreen()
+	printHeader()
 	for i in range(len(results)):
 		print("-----------------------------------------------------------")
 		print("TID:" + str(results[i][3]) +"|"+'\t'+ str(results[i][0]) \
@@ -110,15 +110,11 @@ def printResults(results):
 		print('\n')
 		i += 1
 
-	print('\n' + "Navigation		Command")
 	print("-------------------------------------------------------------")
-	print("Return to feed:		menu")
-	print("Show more twoots:	more")
-	print("Select twoot:		sel")
-	cmd = input("Command:		")
-	return cmd
+	print("Actions:\nback: \tReturn to feed.\nmore:\tShow more twoots.\n" \
+        "sel:\tSelect twoot.\n")
 
-def printScreen():
+def printHeader():
 	os.system("clear")
 	print("Search Twoots")
 	print("-------------------------------------------------------------")
