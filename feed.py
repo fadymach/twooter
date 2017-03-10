@@ -1,12 +1,11 @@
 # initial feed; pages of 5 tweets, option of more info.
 import cx_Oracle as cx
 import textwrap, os
-import searchTwoots, compose, followers, twootInfo, userSearch
+import searchTwoots, compose, followers, twootInfo, userSearch, lists
 
 def feed(usr, connection):
 	showTID = False
 
-	test = "SELECT tid, writer, tdate FROM follows f, (select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text from tweets t, retweets r where t.tid = r.tid UNION select tid, writer, tdate, text from tweets) WHERE writer = f.flwee AND f.flwer = :usr"
 	query = "SELECT tid, u.name AS author, tdate, text, u1.name AS replyto, rt " \
 			"FROM users u, (select flwer, flwee from follows union select :usr as flwer, :usr as flwee from dual), " \
 				"(select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text, t.replyto as replyto, '1' as rt " \
@@ -30,7 +29,7 @@ def feed(usr, connection):
 		print('\n'+system_message)
 		system_message = ""
 
-		userin = input("Selection: ").lower()
+		userin = input("Selection: ").lower().strip()
 		if userin=='new':
 			# create new twoot
 			compose.create(usr, connection)
@@ -69,17 +68,17 @@ def feed(usr, connection):
 		elif userin=='search':
 			searchin = input("Search for users (u) or tweets (t)? (c to cancel)").lower()
 			if searchin=='u':
-				userSearch.search(usr, connection)
+				system_message = userSearch.search(usr, connection)
 			elif searchin=='t':
 				searchTwoots.searchTwoots(usr, connection)
 			elif searchin=='c':
-				pass
+				system_message += "Search Canceled"
 			else:
-				system_message = "INVALID INPUT: "
-			system_message += "Search Canceled"
+				system_message = "INVALID INPUT: Search Canceled"
 		elif userin=='sheep':
-			followers.followers(usr, connection)
-
+			system_message = followers.followers(usr, connection)
+		elif userin=='list':
+			lists.manageLists(usr, connection)
 		elif userin=='exit':
 			cursor.close()
 			return
@@ -122,4 +121,5 @@ def display(twootdata, n, showTID=False):
 			"top: \tReturn to top of feed.\n"\
 			"search:\tSearch for users or individual twoots.\n"\
 			"sheep:\tDisplay a list of your devoted followers.\n"\
+			"list:\tOpen list manager."
 			"exit:\tClose Twooter.")

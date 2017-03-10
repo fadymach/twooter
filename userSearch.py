@@ -6,6 +6,7 @@ import followers
 ###
 
 def search(usr, connection):
+	message = ""
 	os.system("clear")
 	keywords = getKeywords()
 	cursor = connection.cursor()
@@ -19,7 +20,8 @@ def search(usr, connection):
 
 		people = names + cities
 
-		followers.followers(usr, connection, people)
+		message = followers.followers(usr, connection, people)
+	return message
 
 
 
