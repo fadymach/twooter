@@ -25,8 +25,8 @@ WHERE writer = f.flwee AND f.flwer = :usr AND u.usr = writer
 
 -- HOMEPAGE STATS:	can select tweet for stats: no. retweets, no. replies
 --eg 19 --> 21, 4
-SELECT rtcnt as "# of retweets", rpcnt as "# of replies"
-FROM (SELECT COUNT(*) as rtcnt
+SELECT rtcnt, rpcnt, writer, tdate, text
+FROM tweets, (SELECT COUNT(*) as rtcnt
 		FROM retweets
 		WHERE tid = 19
 	), 

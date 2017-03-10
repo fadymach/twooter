@@ -6,4 +6,4 @@ FROM tweets, (SELECT COUNT(*) as rtcnt
 	(SELECT COUNT(*) as rpcnt
 		FROM tweets
 		WHERE replyto IS NOT NULL AND replyto = 19
-	);
+	) WHERE tid = 19;
