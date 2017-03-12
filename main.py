@@ -57,5 +57,5 @@ def debugMain():
 		connection.close()
 
 
-#main()
-debugMain()
+main()
+#debugMain()
