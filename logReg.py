@@ -15,7 +15,7 @@ def main(connection):
 
 		print("Welcome to Twooter")
 		
-		choice = input("Login(l) or Register(r)? ")
+		choice = input("Login(l) or Register(r)? (e to exit)")
 		if choice.strip().lower() == 'l' or choice.strip().lower() == "login":
 			username = login(connection)
 			input_valid = True
@@ -23,7 +23,7 @@ def main(connection):
 			username = registration.register(connection)
 			if (username != None):
 				input_valid = True
-		elif choice.strip().lower() == "exit":
+		elif choice.strip().lower() == "e":
 			quit()
 		else:
 			print("Please choose an option")
