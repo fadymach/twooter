@@ -1,10 +1,6 @@
 import os
 import followers
 
-###
-#TODO need to add only 5 users at a time shown.
-###
-
 def search(usr, connection):
 	message = ''
 	while(True):
@@ -27,7 +23,7 @@ def search(usr, connection):
 			message = "No results found."
 			continue
 
-		followers.followers(usr, connection, people)
+		followers.followers(usr, connection, people, 5)
 		return
 
 

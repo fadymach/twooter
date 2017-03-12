@@ -3,46 +3,55 @@ import os
 import cx_Oracle
 import textwrap
 
-def followers(usr, connection, rows = None):
+def followers(usr, connection, rows = None, limit = None):
 	os.system("clear")
 	#This query selects the id and name of the users that follows the input of :usr
 	query = "SELECT u.usr, u.name FROM FOLLOWS f, users u WHERE f.flwer = u.usr and FLWEE = :usr"
 	cursor = connection.cursor()
 	if(rows == None):
 		rows = cursor.execute(query, {'usr': usr}).fetchall()
-	printList(rows)
+	counter = 0
+	printList(rows, counter, limit)
 	VALIDINPUT = False
 	while (not VALIDINPUT):
 		user_input = input(":" )
 		if(user_input == "c"):
 			break
-		try:
-			selection = int(user_input)
-		except ValueError:
-			os.system("clear")
-			printList(rows)
-			print("Please enter an integer")
-			continue 
-		else: 
-			if(selection > len(rows) or selection < 1):
+		elif(user_input == 'n'):
+			counter += 5
+			limit += 5 
+			printList(rows, counter, limit)
+		else:
+			try:
+				selection = int(user_input)
+			except ValueError:
 				os.system("clear")
-				if(searchFlag == True):
-					printList(rows)
+				printList(rows, counter, limit)
+				print("Please enter an integer")
+				continue 
+			else: 
+				if(selection > len(rows) or selection < 1):
+					os.system("clear")
+					printList(rows, counter, limit)
+					print("Make a valid selection, please")
+					continue
 				else:
-					printList(rows)
-				print("Make a valid selection, please")
-				continue
-			else:
-				VALIDINPUT = True
-				seeMore(rows[selection - 1], usr, connection)
-				break
+					VALIDINPUT = True
+					seeMore(rows[selection - 1], usr, connection)
+					break
 
 #Prints a formated list of the followers with indexes 
-def printList(rows):
-	print("Which of your follows would you like to see more information about? ")
-	for i in range(0, len(rows)):
-		print("(%d) %s" %(i+1, rows[i][1]))
-	print("Enter an integer, or c to cancel.")
+def printList(rows, counter, limit):
+	os.system("clear")
+	if(limit < len(rows)):
+		print("Which of your follows would you like to see more information about? ")
+		for i in range(counter, limit):
+			print("(%d) %s" %(i+1, rows[i][1]))
+		print("Enter an integer, n to see more, or c to cancel.")
+	else:
+		for i in range(counter, len(rows)):
+			print("(%d) %s" %(i+1, rows[i][1]))
+		print("End of the list")
 
 
 def seeMore(person, usr, connection):
