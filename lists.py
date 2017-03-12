@@ -21,7 +21,35 @@ def manageLists(usr, connection):
 		elif cmd == "del":
 			deleteList(usr, connection)
 
+
+def deleteList(usr, connection):
+	# Allows user to delete list
+	
+	# Get user's lists that they're allowed to delete
+	queryOutput = getMyLists(usr, connection)
+	myLists = []
+	for list in queryOutput:
+		myLists.append(list[0].lower().strip())
+	
+	printHeader("Delete List")
+	lname = input("Enter list name: ").lower().strip()
+	while len(lname) > 12:
+		lname = input("Name must be less than 12 characters! Name: ").lower().split()
+	
+	if lname not in myLists:
+		print("This is not your list; you cannot delete it!")
+		time.sleep(4)
+		return
+
+	query = "DELETE FROM lists WHERE lower(lname) = '"+lname+"'"
+	cursor = connection.cursor()
+	cursor.execute(query)
+	connection.commit()
+	cursor.close()
+
+
 def createList(usr, connection):
+	# Allows user to create a new list
 	printHeader("Create List")
 	lname = input("Enter unique list name: ").lower().strip()
 	while len(lname) > 12:
@@ -68,6 +96,7 @@ def selectNoEditList(connection, allowedLists):
 			return
 	
 	results = selectListQuery(connection, list)
+	printHeader("List: " + list)
 	printAList(results)
 
 	allowedCMD = ["back"]
@@ -86,7 +115,7 @@ def printMyLists(usr, connection):
 	myLists = []
 	for list in queryOutput:
 		print(list[0].strip())
-		myLists.append(list[0].strip()) # Keep proper list to check selection
+		myLists.append(list[0].lower().strip()) # Keep proper list to check selection
 	
 	allowedCMD = ["back","sel"]
 	descriptions = ["Return to lists menu","Select a list"]

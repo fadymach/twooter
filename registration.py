@@ -4,8 +4,8 @@ import re, os
 def register(connection):
 	os.system("clear")
 	print('\n'+"Twooter User Registration")
-	print("-------------------------------------------------------------")
-	getUsr(connection)
+	print('-'*56)
+	return getUsr(connection)
 
 
 def getUsr(connection):
@@ -42,7 +42,7 @@ def getUsr(connection):
 	maxID = cursor.fetchone()[0]
 	cursor.close()
 
-	createUsr(connection, name, email, city, timezone, password, maxID)
+	return createUsr(connection, name, email, city, timezone, password, maxID)
 
 
 def createUsr(connection, name, email, city, timezone, password, maxID):
