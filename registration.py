@@ -12,9 +12,9 @@ def getUsr(connection):
 	cursor = connection.cursor()
 
 	# Get new user info
-	name = input("Name: ").lower().strip()
+	name = input("Name: ").strip()
 	while len(name) > 20:
-		name = input("Name must be less than 20 characters!"+'\n'+"Name: ").lower().strip()
+		name = input("Name must be less than 20 characters!"+'\n'+"Name: ").strip()
 
 	email = input("Email: ").lower().strip()
 	while re.match(".*@.*\..*", email) == None:
@@ -22,9 +22,9 @@ def getUsr(connection):
 	while len(email) > 15:
 		email = input("Email must be less than 15 characters!"+'\n'+"Email: ").lower().strip()
 
-	city = input("City: ").lower().strip()
+	city = input("City: ").strip()
 	while len(city) > 12:
-		city = input("City must be less than 12 characters!"+'\n'+"Email: ").lower().strip()
+		city = input("City must be less than 12 characters!"+'\n'+"Email: ").strip()
 
 	timezone = float(input("Timezone: "))
 	while (timezone < -12) or (timezone > 14):

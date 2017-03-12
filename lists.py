@@ -158,10 +158,12 @@ def addToList(connection, list):
 	isInt = False
 	while not isInt:
 		try:
-			usrToAdd = input("User ID of user to add: ")
+			usrToAdd = input("User ID of user to add: ").strip().lower()
 			usrToAdd = int(usrToAdd)
 			isInt = True
 		except ValueError:
+			if usrToAdd == "back":
+				return
 			print("User ID must be integer!")
 
 	query = "INSERT INTO includes VALUES ('"+list+"', "+str(usrToAdd)+")"
@@ -179,10 +181,12 @@ def delFromList(connection, list):
 	isInt = False
 	while not isInt:
 		try:
-			usrToDel = input("User ID of user to delete: ")
+			usrToDel = input("User ID of user to delete: ").strip().lower()
 			usrToDel = int(usrToDel)
 			isInt = True
 		except ValueError:
+			if usrToDel == "back":
+				return
 			print("User ID must be integer!")
 
 	query = "DELETE FROM includes " \
