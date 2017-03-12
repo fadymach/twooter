@@ -49,9 +49,10 @@ def printList(rows, counter, limit):
 			print("(%d) %s" %(i+1, rows[i][1]))
 		print("Enter an integer, n to see more, or c to cancel.")
 	else:
+		print("Enter an integer, n to see more, or c to cancel.")
 		for i in range(counter, len(rows)):
 			print("(%d) %s" %(i+1, rows[i][1]))
-		print("End of the list")
+		print("End of the list. No more to see")
 
 
 def seeMore(person, usr, connection):
