@@ -110,8 +110,8 @@ def followPerson(usr, id, connection):
 		connection.commit()
 		message = "Followed!"
 	except cx_Oracle.IntegrityError:
-		message = "You're already following"
-	message += str(usr) + "  " + str(id)
+		message = "You're already following "
+	message += str(usr) + " --> " + str(id)
 	return message
 
 def display(twootdata, n, usr_info):

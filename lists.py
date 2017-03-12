@@ -96,6 +96,7 @@ def selectNoEditList(connection, allowedLists):
 			return
 	
 	results = selectListQuery(connection, list)
+	printHeader("List: " + list)
 	printAList(results)
 
 	allowedCMD = ["back"]
