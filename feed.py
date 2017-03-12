@@ -8,7 +8,7 @@ def feed(usr, connection):
 
 	query = "SELECT tid, u.name AS author, tdate, text, repname AS replyto, rt " \
 			"FROM users u, (select flwer, flwee from follows union select :usr as flwer, :usr as flwee from dual), " \
-				"(select t.tid as tid, r.usr as writer, t.tdate as tdate, t.text as text, t.replyto as replyto, '1' as rt " \
+				"(select t.tid as tid, r.usr as writer, r.rdate as tdate, t.text as text, t.replyto as replyto, '1' as rt " \
 				 "from tweets t, retweets r " \
 				 "where t.tid = r.tid " \
 			"UNION " \
