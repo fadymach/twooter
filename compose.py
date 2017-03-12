@@ -25,7 +25,7 @@ def create(usr, connection, replyto = None):
 	try: 
 		cursor.execute(query, (tid, writer, tdate, text, replyto))
 	except cx_Oracle.IntegrityError:
-		print("Twoot was not created, sorry. Try again")
+		print("Twoot was not created, sorry. Try again.")
 	else:
 		print("Twoot was created!")
 		connection.commit()
@@ -36,11 +36,23 @@ def create(usr, connection, replyto = None):
 					# addToMentions(each, tid, connection)
 					pass
 				else:
-					# addToMentions(tag, tid, connection)
-					pass
+				    addToMentions(tag, tid, connection)
 	finally:
 		connection.commit()
 		cursor.close()
+
+
+def retwoot(usr, connection, tid):
+	# Retwoots a twoot
+	cursor = connection.cursor()
+	query = "INSERT INTO retweets VALUES (:1, :2, sysdate)"
+	try:
+		cursor.execute(query, (usr, tid))
+	except cx_Oracle.IntegrityError:
+		print("Twoot was not retwooted, sorry. Try again.")
+	else:
+		print("Retwooted!")
+		connection.commit()
 
 
 def getTid(connection):

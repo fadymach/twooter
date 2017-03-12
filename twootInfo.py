@@ -37,7 +37,8 @@ def info(usr, connection, tid):
             compose.create(usr, connection, tid)
             sys_msg = "Reply posted."
         elif userin=='retw':
-            sys_msg = "FUNCTION NOT CURRENTLY AVAILABLE"
+            compose.retwoot(usr, connection, tid)
+            sys_msg = "Retwooted."
         elif userin=='back':
             return 0
         else:
