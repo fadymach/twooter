@@ -5,7 +5,7 @@ def register(connection):
 	os.system("clear")
 	print('\n'+"Twooter User Registration")
 	print('-'*56)
-	getUsr(connection)
+	return getUsr(connection)
 
 
 def getUsr(connection):
@@ -42,7 +42,7 @@ def getUsr(connection):
 	maxID = cursor.fetchone()[0]
 	cursor.close()
 
-	createUsr(connection, name, email, city, timezone, password, maxID)
+	return createUsr(connection, name, email, city, timezone, password, maxID)
 
 
 def createUsr(connection, name, email, city, timezone, password, maxID):
