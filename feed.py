@@ -67,6 +67,9 @@ def feed(usr, connection):
 			searchin = input("Search for users (u) or tweets (t)? (c to cancel)").lower()
 			if searchin=='u':
 				userSearch.search(usr, connection)
+				# refresh feed data
+				cursor.execute(query, {'usr':usr})
+				twootdata = cursor.fetchmany(numRows = 5)
 			elif searchin=='t':
 				searchTwoots.searchTwoots(usr, connection)
 				# refresh feed data
