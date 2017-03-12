@@ -18,8 +18,9 @@ def followers(usr, connection, rows = None, limit = None):
 		if(user_input == "c"):
 			break
 		elif(user_input == 'n'):
-			counter += 5
-			limit += 5 
+			if(limit != None):
+				counter += 5
+				limit += 5 
 			printList(rows, counter, limit)
 		else:
 			try:
@@ -43,18 +44,23 @@ def followers(usr, connection, rows = None, limit = None):
 #Prints a formated list of the followers with indexes 
 def printList(rows, counter, limit):
 	os.system("clear")
-	if(limit < len(rows)):
-		print("Which of your follows would you like to see more information about? ")
-		for i in range(counter, limit):
-			print("(%d) %s" %(i+1, rows[i][1]))
-		print("Enter an integer, n to see more, or c to cancel.")
+	if(limit != None):
+		if(limit < len(rows)):
+			print("Who would you like to see more information about? ")
+			for i in range(counter, limit):
+				print("(%d) %s" %(i+1, rows[i][1]))
+			print("Enter an integer, n to see more, or c to cancel.")
+		else:
+			print("Enter an integer, n to see more, or c to cancel.")
+			for i in range(counter, len(rows)):
+				print("(%d) %s" %(i+1, rows[i][1]))
+			print("End of the list. No more to see")
 	else:
-		print("Enter an integer, n to see more, or c to cancel.")
-		for i in range(counter, len(rows)):
+		print("Who would you like to see more information about? ")
+		for i in range(0, len(rows)):
 			print("(%d) %s" %(i+1, rows[i][1]))
-		print("End of the list. No more to see")
-
-
+		print("Enter an integer, n to see more, or c to cancel.")
+		
 def seeMore(person, usr, connection):
 	message = "" 
 	name = person[1].strip()
@@ -110,8 +116,8 @@ def followPerson(usr, id, connection):
 		connection.commit()
 		message = "Followed!"
 	except cx_Oracle.IntegrityError:
-		message = "You're already following "
-	message += str(usr) + " --> " + str(id)
+		message = "You're already following"
+	message += str(usr) + "  " + str(id)
 	return message
 
 def display(twootdata, n, usr_info):
