@@ -26,6 +26,7 @@ def main():
 	
 	# Close cursor and connection
 	con.close()
+	print("connection closed")
 
 
 if __name__ == '__main__':

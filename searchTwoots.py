@@ -14,9 +14,11 @@ def searchTwoots(usr, connection):
 	# Get user input
 	allowedTID = getTID(results) # IDs user is allowed to input
 	allowedCMD = ("back", "more", "sel")
+	
 	while True:
 		printResults(results)
 		print(msg)
+		
 		cmd = input("Selection: ").lower()
 		while cmd not in allowedCMD:
 			cmd = input("Invalid selection! Selection: ")
@@ -69,7 +71,6 @@ def executeQuery(connection, keywords, hashtags):
 		query2 = "SELECT u2.name, t2.tdate, t2.text, t2.tid " \
 				"FROM users u2, tweets t2, mentions m " +whereClause2
 
-
 	# Combine queries if there are both keywords and hashtags
 	if (len(keywords) > 0) and (len(hashtags) > 0):
 		queryUnion = "("+query1+") UNION ("+query2+")"
@@ -80,7 +81,6 @@ def executeQuery(connection, keywords, hashtags):
 
 	# Add ORDER BY clause
 	queryComplete = "SELECT * FROM ("+queryUnion+") ORDER BY 2 DESC"
-
 
 	# Execute query
 	cursor = connection.cursor()
