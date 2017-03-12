@@ -1,4 +1,4 @@
-import os
+import os, time
 import cx_Oracle as cx
 
 def manageLists(usr, connection):
@@ -21,6 +21,62 @@ def manageLists(usr, connection):
 		elif cmd == "del":
 			deleteList(usr, connection)
 
+def createList(usr, connection):
+	printHeader("Create List")
+	lname = input("Enter unique list name: ").lower().strip()
+	while len(lname) > 12:
+		lname = input("Name must be less than 12 characters! Name: ").lower().split()
+
+	query = "INSERT INTO lists VALUES ('"+lname+"', "+str(usr)+")"
+	cursor = connection.cursor()
+	try:
+		cursor.execute(query)
+		connection.commit()
+	except cx.IntegrityError:
+		print("List name is already taken! Returning back to menu...")
+		time.sleep(4)
+	
+	cursor.close()
+
+
+def printOnLists(usr, connection):
+	# Prints the lists that a user is on
+	allowedLists = []
+	queryOutput = getOnLists(usr, connection)
+
+	allowedCMD = ["back", "sel"]
+	descriptions = ["Return to lists menu", "Select a list"]
+	while True:
+		printHeader("Lists that I am on")
+		for list in queryOutput:
+			print(list[0].strip())
+			allowedLists.append(list[0].strip())
+		
+		cmd = getInput(allowedCMD, descriptions)
+		if cmd == "back":
+			break
+		elif cmd == "sel":
+			selectNoEditList(connection, allowedLists)
+			
+			
+def selectNoEditList(connection, allowedLists):
+	# Show users in a list, w/o options to add/delete members
+	list = input("Enter a list name: ").strip().lower()
+	while list not in allowedLists:
+		list = input("Enter valid list name!: ").strip().lower()
+		if list == "back" and "back" not in allowedLists:
+			return
+	
+	results = selectListQuery(connection, list)
+	printAList(results)
+
+	allowedCMD = ["back"]
+	descriptions = ["Return to lists"]
+	while True:
+		cmd = getInput(allowedCMD, descriptions)
+		if cmd == "back":
+			break
+
 
 def printMyLists(usr, connection):
 	# Prints user's lists, and gives option to select list for further action
@@ -30,7 +86,7 @@ def printMyLists(usr, connection):
 	myLists = []
 	for list in queryOutput:
 		print(list[0].strip())
-		myLists.append(list[0].strip()) # Keep proper list to check selection.
+		myLists.append(list[0].strip()) # Keep proper list to check selection
 	
 	allowedCMD = ["back","sel"]
 	descriptions = ["Return to lists menu","Select a list"]
@@ -45,14 +101,11 @@ def selectList(connection, allowedLists):
 	list = input("Enter list name: ").strip().lower()
 	while list not in allowedLists:
 		list = input("Enter valid list name!: ").strip().lower()
+		if list == "back" and "back" not in allowedLists:
+			return
 
 	# Create and execute query
 	results = selectListQuery(connection, list)
-
-	# Take cursor results and put in new list
-	#results = []
-	#for tuple in queryOutput:
-	#	results.append((tuple[0],tuple[1]))
 
 	# Display results and get user input
 	allowedCMD = ["back","add","del"]
@@ -71,18 +124,6 @@ def selectList(connection, allowedLists):
 			delFromList(connection, list)
 			results = selectListQuery(connection, list) # Update list to print
 
-def selectListQuery(connection, list):
-	# Query used in selectList function.
-	# Placed in separate function b/c it gets called more than once if a user
-	# adds or deletes a member from a list.
-	query = "SELECT i.member, u.name FROM includes i, users u " \
-			"WHERE i.member = u.usr AND LOWER(i.lname) = '"+list+"'"
-	cursor = connection.cursor()
-	cursor.execute(query)
-	results = cursor.fetchall()
-	cursor.close()
-	return results
-
 
 def addToList(connection, list):
 	isInt = False
@@ -96,9 +137,13 @@ def addToList(connection, list):
 
 	query = "INSERT INTO includes VALUES ('"+list+"', "+str(usrToAdd)+")"
 	cursor = connection.cursor()
-	cursor.execute(query)
-	cursor.close()
-	connection.commit()
+	try:
+		cursor.execute(query)
+		cursor.close()
+		connection.commit()
+	except cx.IntegrityError:
+		print("User does not exist!")
+		time.sleep(3)
 
 
 def delFromList(connection, list):
@@ -122,8 +167,7 @@ def delFromList(connection, list):
 def printAList(results):
 	# Prints users in a list
 	print("USER ID" +'\t'*2+ "NAME")
-	for row in results: # FIX THIS
-		#print(row[0], row[1])
+	for row in results:
 		print("%7d\t\t %s" % (row[0], row[1]))
 
 
@@ -142,6 +186,16 @@ def getOnLists(usr, connection):
 	query = "SELECT lname FROM includes WHERE member = :usr"
 	cursor = connection.cursor()
 	cursor.execute(query, {'usr':usr})
+	results = cursor.fetchall()
+	cursor.close()
+	return results
+
+def selectListQuery(connection, list):
+	# Query used in selectList function.
+	query = "SELECT i.member, u.name FROM includes i, users u " \
+			"WHERE i.member = u.usr AND LOWER(i.lname) = '"+list+"'"
+	cursor = connection.cursor()
+	cursor.execute(query)
 	results = cursor.fetchall()
 	cursor.close()
 	return results
