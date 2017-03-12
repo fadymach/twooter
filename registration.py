@@ -4,7 +4,7 @@ import re, os
 def register(connection):
 	os.system("clear")
 	print('\n'+"Twooter User Registration")
-	print("-------------------------------------------------------------")
+	print('-'*56)
 	getUsr(connection)
 
 
