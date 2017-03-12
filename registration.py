@@ -12,7 +12,7 @@ def getUsr(connection):
 	cursor = connection.cursor()
 
 	# Get new user info
-	name = input("Name: ").strip()
+	name = input("Name: ").lower().strip()
 	while len(name) > 20:
 		name = input("Name must be less than 20 characters!"+'\n'+"Name: ").lower().strip()
 
